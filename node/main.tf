@@ -40,7 +40,7 @@ module "private_instance" {
   zone              = local.zone
   subnetwork        = local.subnet_name
   num_instances     = 1
-  hostname          = "${var.vcluster.name}-${random_id.vm_suffix.hex}"
+  hostname          = "gcp-${var.vcluster.name}-${random_id.vm_suffix.hex}"
   instance_template = module.instance_template.self_link
 
   # Will use NAT
