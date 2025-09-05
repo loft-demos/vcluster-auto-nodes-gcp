@@ -97,6 +97,7 @@ module "instance_template" {
   # --- Spot wiring ---
   # Prefer modern Spot controls; module forwards to google_compute_instance_template.scheduling
   provisioning_model          = local.spot ? "SPOT" : "STANDARD"
+  preemptible                 = local.spot
   automatic_restart           = local.spot ? false   : true
   instance_termination_action = local.spot ? "DELETE": null
 }
