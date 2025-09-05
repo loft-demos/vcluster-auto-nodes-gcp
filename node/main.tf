@@ -20,6 +20,7 @@ locals {
   subnet_name  = var.vcluster.nodeEnvironment.outputs["subnet_name"]
 
   instance_type = var.vcluster.nodeType.spec.properties["instance-type"]
+  spot = try(tobool(var.vcluster.nodeType.spec.properties["spot"]), false)
 }
 
 provider "google" {
@@ -92,4 +93,10 @@ module "instance_template" {
   }
 
   startup_script = "#!/bin/bash\n# Ensure cloud-init runs\ncloud-init status --wait || true"
+
+  # --- Spot wiring ---
+  # Prefer modern Spot controls; module forwards to google_compute_instance_template.scheduling
+  provisioning_model          = local.spot ? "SPOT" : "STANDARD"
+  automatic_restart           = local.spot ? false   : true
+  instance_termination_action = local.spot ? "DELETE": null
 }
